@@ -47,6 +47,25 @@ public class Day12_ExplicitWait extends TestBase {
         Assertions.assertTrue(successMessage.getText().contains("Hello World!"));
 
 
+        
+    }
+
+      @Test
+    public void explicitWait_ReusableMethod() {
+
+        //    Go to https://the-internet.herokuapp.com/dynamic_loading/1
+        driver.get("https://the-internet.herokuapp.com/dynamic_loading/1");
+
+//    When user clicks on the Start button
+        WebElement startButton = driver.findElement(By.xpath("//*[text()='Start']"));
+        startButton.click();
+
+//     Using REUSABLE method from TEST BASE we can sole the issue of synchronisation (through adding explicit wait)
+        WebElement successMessage = waitForVisibility(By.xpath("//div[@id='finish']//h4"), 10);
+
+//    Then verify the ‘Hello World!’ Shows up on the screen
+        Assertions.assertTrue(successMessage.getText().contains("Hello World!"));
+
     }
 
 }
