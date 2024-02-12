@@ -379,6 +379,7 @@ public abstract class TestBase {
 
     //      SCREENSHOT : capture the screenshot of the entire page
     public void captureScreenShotOfEntirePage() {
+
         // 1. getScreenShotAs method to capture the screenshot
         File image = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
@@ -392,6 +393,49 @@ public abstract class TestBase {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+    }
+
+
+    //      SCREENSHOT : capture the screenshot of the Given element only
+    public void captureScreenShotOfElement(WebElement element) {
+
+        // 1. getScreenShotAs method to capture the screenshot
+        File image = element.getScreenshotAs(OutputType.FILE);
+
+        // 2. save the image in a path with a dynamic name
+        String now = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());  // To provide unique name for each screenshot
+        String filePath = System.getProperty("user.dir") + "/test-output/ElementScreenShot/" + now + "image.png";
+
+        // 3. save the image in the path
+        try {
+            FileUtils.copyFile(image, new File(filePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+
+    //      SCREENSHOT : capture the screenshot of the entire page (For EXTENT REPORTS)
+
+    public static String captureScreenShotOfEntirePageAsString() {
+
+        // 1. getScreenShotAs method to capture the screenshot
+        File image = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+
+        // 2. save the image in a path with a dynamic name
+        String now = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());  // To provide unique name for each screenshot
+        String filePath = System.getProperty("user.dir") + "/test-output/Reports/" + now + "image.png";
+
+        // 3. save the image in the path
+        try {
+            FileUtils.copyFile(image, new File(filePath));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return new File(filePath).getAbsolutePath();
 
     }
 
