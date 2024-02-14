@@ -1,7 +1,12 @@
 package com.myfirstproject.utilities;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -436,6 +441,61 @@ public abstract class TestBase {
         }
 
         return new File(filePath).getAbsolutePath();
+
+    }
+
+    /*
+    REUSABLE METHOD FOR EXTENT REPORTS
+    Create 3 Extent Report objects:
+    1- ExtentReports -> Create reports
+    2- ExtentHtml Reporter -> Provides report templates
+    3- ExtentTest -> Logs test steps; only THIS WILL BE CALLED IN THE TEST CLASS
+     */
+
+    protected static ExtentReports extentReports;
+    protected static ExtentHtmlReporter extentHtmlReporter;
+    protected static ExtentTest extentTest;
+
+    /*
+    Create BeforeAll method -- runs the pre = requisites for the Extent Report generation.
+    AfterAll method generates the reports (using flush(), without this flush,
+    we can't create the reports (like perform() in Actions class)
+     */
+
+    @BeforeAll
+    public static void setExtentReports() {
+        String now = new SimpleDateFormat("yyyyMMddhhmmss").format(new Date());
+        String reportPath = System.getProperty("user.dir") + "/test-output/Reports/" + now + "extent-report.html";
+
+        extentReports = new ExtentReports();
+        extentHtmlReporter = new ExtentHtmlReporter(reportPath);
+
+        //         *** OPTIONAL - Add CUSTOM INFORMATION regarding your project / test for Extent Reports
+        extentReports.setSystemInfo("Project name: ", "My Selenium Project");
+        extentReports.setSystemInfo("Browser :", "Chrome");
+        extentReports.setSystemInfo("Team name: ", "B197");
+        extentReports.setSystemInfo("QA name: ", "Ömer Celebi");
+        extentReports.setSystemInfo("Environment: ", "UAT");
+
+
+        //        *** OPTIONAL - Add documents information related to the project /test extentHtmlReporter
+        extentHtmlReporter.config().setReportName("My First Report");
+        extentHtmlReporter.config().setDocumentTitle("My Extent Report");
+
+
+        // Now attach the report and HTML reporter
+        extentReports.attachReporter(extentHtmlReporter);
+
+        // Now create the extent test
+        extentTest = extentReports.createTest("Login test", "Batch 197_Smoke Test Suite");
+
+
+    }
+
+
+    @AfterAll
+    public static void flushExtentReports() {
+        extentReports.flush(); // MANDATORY -> to generate the extent reports
 
     }
 
